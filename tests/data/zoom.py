@@ -1,15 +1,25 @@
 import WrightTools as wt
 from WrightTools import datasets
+import matplotlib.pyplot as plt
 
+
+def test_zoom_DOVE():
+    p = datasets.KENT.LDS821_DOVE
+    data = wt.data.from_KENT(p, ignore=["d1", "d2", "wm"])
+    data.transform("w2", "w1-w2")
+    newdata = data.zoom([2,1])
+    wt.artists.quick2D(newdata)
+    return newdata
 
 def test_zoom():
     p = datasets.PyCMDS.w2_w1_000
     data = wt.data.from_PyCMDS(p)
     data.transform("w1", "wm")
-    data.zoom(2)
-    # objects = wt.artists.quick2D(data)
-    # plt.close('all')
-
+    newdata = data.zoom([2,1])
+    wt.artists.quick2D(newdata)
+    return newdata
 
 if __name__ == "__main__":
-    test_zoom()
+    plt.close('all')
+    data1 = test_zoom()
+    #data2 = test_zoom_DOVE()

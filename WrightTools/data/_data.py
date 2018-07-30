@@ -1455,7 +1455,7 @@ class Data(Group):
         self.flush()
         self._on_axes_updated()
 
-    def zoom(self, factor, order=1, verbose=True):
+    def zoom(self, factor, order=1, verbose=True, parent=None, name=None):
         """Zoom the data array using spline interpolation of the requested order.
 
         The number of points along each axis is increased by factor.
@@ -1466,22 +1466,49 @@ class Data(Group):
 
         Parameters
         ----------
-        factor : float
+        factor : float or sequence
             The number of points along each axis will increase by this factor.
+            If float, factor is the same for each axis.
+            If a sequence, factor should contain one value for each axis
         order : int (optional)
             The order of the spline used to interpolate onto new points.
         verbose : bool (optional)
             Toggle talkback. Default is True.
-        """
-        raise NotImplementedError
-        import scipy.ndimage
 
-        # axes
-        for axis in self._axes:
-            axis[:] = scipy.ndimage.interpolation.zoom(axis[:], factor, order=order)
-        # channels
+        Returns
+        -------
+        WrightTools Data instance
+            New data object with the zoomed channels and axes
+        """
+        if name is None:
+            name = self.natural_name + "_zoomed"
+        if parent is None:
+            newdata = Data(name=name)
+        else:
+            parent.create_data(name=name)
+        # for key, val in self.attrs.items():
+        #    newdata.attrs[key] = val
+        import scipy.ndimage
+        scipy_zoom = scipy.ndimage.interpolation.zoom
+        warnings.warn("zoom", category=wt_exceptions.EntireDatasetInMemoryWarning)
+
         for channel in self.channels:
-            channel[:] = scipy.ndimage.interpolation.zoom(channel[:], factor, order=order)
-        # return
+            channel_values = scipy_zoom(channel[:], factor)
+            newdata.create_channel(
+                name=channel.natural_name, values=channel_values, units=channel.units
+            )
+
+        args = []
+        for i, axis in enumerate(self.axes):
+            if len(axis.variables) > 1:
+                raise NotImplementedError("zoom currently works only with simple axes")
+            variable = axis.variables[0]
+            args.append(variable.natural_name)
+            
+            newdata.create_variable(
+                    name=variable.natural_name, values=scipy_zoom(axis.full, factor), units=variable.units
+            )
+        newdata.transform(*args)
         if verbose:
-            print("data zoomed to new shape:", self.shape)
+            print("zoomed to shape:", self.shape)
+        return newdata
