@@ -1458,7 +1458,7 @@ class Data(Group):
     def zoom(self, factor, order=1, verbose=True, parent=None, name=None):
         """Zoom the data array using spline interpolation of the requested order.
 
-        The number of points along each axis is increased by factor.
+        The number of points along each variable is increased by factor.
         See `scipy ndimage`__ for more info.
 
         __ http://docs.scipy.org/doc/scipy/reference/
@@ -1498,17 +1498,24 @@ class Data(Group):
                 name=channel.natural_name, values=channel_values, units=channel.units
             )
 
-        args = []
-        for i, axis in enumerate(self.axes):
-            if len(axis.variables) > 1:
-                raise NotImplementedError("zoom currently works only with simple axes")
-            variable = axis.variables[0]
-            args.append(variable.natural_name)
-            
-            newdata.create_variable(
-                    name=variable.natural_name, values=scipy_zoom(axis.full, factor), units=variable.units
-            )
+        args = [axis.natural_name for axis in self.axes]
+        for i, variable in enumerate(self.variables):
+            # if len(axis.variables) > 1:
+            #    raise NotImplementedError("zoom currently works only with simple axes")
+            # variable = axis.variables[0]
+            #args.append(variable.natural_name)
+            if type(factor) not in [int, float]:
+                factor_i = [N for N in variable.shape if N > 1]
+            if len(factor_i) > 0:
+                values = scipy_zoom(variable[:].squeeze(), factor_i)
+                print(values.shape)
+                print(variable.shape)
+                values.reshape(variable.shape)
+                newdata.create_variable(
+                        name=variable.natural_name, values=values,
+                        units=variable.units
+                )
         newdata.transform(*args)
         if verbose:
-            print("zoomed to shape:", self.shape)
+            print("zoomed from shape {0} to shape {1}".format(self.shape, newdata.shape))
         return newdata
