@@ -55,28 +55,10 @@ class Group(h5py.Group, metaclass=MetaClass):
         file.require_group(parent)
         file.require_group(path)
         h5py.Group.__init__(self, bind=file[path].id)
-        self.__n = 0
         self.fid = self.file.fid
         self.natural_name = name
         # attrs
         self.attrs["class"] = self.class_name
-        for key, value in kwargs.items():
-            try:
-                if isinstance(value, pathlib.Path):
-                    value = str(value)
-                elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], str):
-                    value = np.array(value, dtype="S")
-                elif sys.version_info > (3, 6):
-                    try:
-                        value = os.fspath(value)
-                    except TypeError:
-                        pass  # Not all things that can be stored have fspath
-                self.attrs[key] = value
-            except TypeError:
-                # some values have no native HDF5 equivalent
-                message = "'{}' not included in attrs because its Type ({}) cannot be represented"
-                message = message.format(key, type(value))
-                warnings.warn(message)
         # the following are populated if not already recorded
         self.item_names
 
