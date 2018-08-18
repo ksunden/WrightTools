@@ -60,15 +60,8 @@ class Group(h5py.Group, metaclass=MetaClass):
         # attrs
         self.attrs["class"] = self.class_name
         # the following are populated if not already recorded
-        self.item_names
 
         parent = file[parent]
-        if parent.name == self.name:
-            pass  # at root, dont add to item_names
-        elif self.natural_name.encode() not in parent.attrs["item_names"]:
-            parent.attrs["item_names"] = np.append(
-                parent.attrs["item_names"], self.natural_name.encode()
-            )
 
 
     def __new__(cls, *args, **kwargs):
@@ -132,14 +125,7 @@ class Group(h5py.Group, metaclass=MetaClass):
         """Full path: file and internal structure."""
         return self.filepath + "::" + self.name
 
-    @property
-    def item_names(self):
-        """Item names."""
-        if "item_names" not in self.attrs.keys():
-            self.attrs["item_names"] = np.array([], dtype="S")
-        return tuple(n.decode() for n in self.attrs["item_names"])
-
 
     def close(self):
-        #from .collection import Collection
+        from .collection import Collection
         pass
