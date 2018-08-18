@@ -148,44 +148,8 @@ class Group(h5py.Group, metaclass=MetaClass):
         Tempfiles, if they exist, will be removed
         """
         from .collection import Collection
+        pass
 
-        path = os.path.abspath(self.filepath) + "::"
-        for kind in (Collection, Group):
-            rm = []
-            for key in kind._instances.keys():
-                if key.startswith(path):
-                    rm.append(key)
-            for key in rm:
-                kind._instances.pop(key, None)
-
-        if self.fid.valid > 0:
-            # for some reason, the following file operations sometimes fail
-            # this stops execution of the method, meaning that the tempfile is never removed
-            # the following try case ensures that the tempfile code is always executed
-            # ---Blaise 2018-01-08
-            try:
-                self.file.flush()
-                try:
-                    # Obtaining the file descriptor must be done prior to closing
-                    fd = self.fid.get_vfd_handle()
-                except (NotImplementedError, ValueError):
-                    # only available with certain h5py drivers
-                    # not needed if not available
-                    pass
-
-                self.file.close()
-                try:
-                    if fd:
-                        os.close(fd)
-                except OSError:
-                    # File already closed, e.g.
-                    pass
-            except SystemError as e:
-                warnings.warn("SystemError: {0}".format(e))
-            finally:
-                if hasattr(self, "_tmpfile"):
-                    os.close(self._tmpfile[0])
-                    os.remove(self._tmpfile[1])
 
     def flush(self):
         """Ensure contents are written to file."""
