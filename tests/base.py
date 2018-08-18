@@ -1,3 +1,3 @@
 import WrightTools as wt
 def test_a():
-    c = wt.collection.Collection()
+    c = wt.Group()
