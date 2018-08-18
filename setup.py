@@ -38,7 +38,7 @@ setup(
         "pytest-cov",
     ],
     install_requires=[
-        "scikit-image",
+        "dask[array]",
         "h5py",
         "numpy>=1.15.0",
         "python-dateutil",
