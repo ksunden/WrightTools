@@ -14,32 +14,17 @@ import WrightTools as wt
 
 def test_named_root_collection():
     c = wt.Collection(name="blaise")
-    assert c.natural_name == "blaise"
-    assert c.attrs["name"] == "blaise"
 
 def test_parent_child():
     parent = wt.Collection(name="mother")
     child = wt.Collection(parent=parent, name="goose")
-    assert child.filepath == parent.filepath
-    assert child.parent is parent
 
 def test_single_instance_collection():
     c1 = wt.Collection()
     c2 = wt.Collection(filepath=c1.filepath, edit_local=True)
-    assert c1 is c2
 
 def test_tempfile_cleanup():
     c = wt.Collection()
     path = c.filepath
-    assert os.path.isfile(path)
     c.close()
-    assert not os.path.isfile(path)
 
-
-def test_nested():
-    c = wt.Collection()
-    cc = c.create_collection()
-    assert c.fid.id == cc.fid.id
-    c.file.close()
-    assert c.id.valid == 0
-    assert cc.id.valid == 0
