@@ -18,13 +18,11 @@ import numpy as np
 import h5py
 
 from . import kit as wt_kit
-from . import __wt5_version__
 
 
 # --- define --------------------------------------------------------------------------------------
 
 
-wt5_version = __wt5_version__
 
 
 # --- class ---------------------------------------------------------------------------------------
@@ -82,7 +80,6 @@ class Group(h5py.Group, metaclass=MetaClass):
                 message = message.format(key, type(value))
                 warnings.warn(message)
         # the following are populated if not already recorded
-        self.__version__
         self.item_names
 
         parent = file[parent]
@@ -175,12 +172,6 @@ class Group(h5py.Group, metaclass=MetaClass):
                 setattr(instance, "_tmpfile", tmpfile)
                 weakref.finalize(instance, instance.close)
         return instance
-
-    @property
-    def __version__(self):
-        if "__version__" not in self.file.attrs.keys():
-            self.file.attrs["__version__"] = wt5_version
-        return self.file.attrs["__version__"]
 
     @property
     def created(self):
