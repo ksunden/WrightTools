@@ -36,9 +36,6 @@ setup(
         "pytest",
         "pytest-cov",
     ],
-    install_requires=[
-        "dask[array]",
-    ],
     extras_require={
         "docs": ["sphinx", "sphinx-gallery==0.1.12", "sphinx-rtd-theme"],
         "dev": ["black", "pre-commit", "pydocstyle"],
