@@ -24,8 +24,7 @@ extra_files = {
     ]
 }
 
-with open(os.path.join(here, "WrightTools", "VERSION")) as version_file:
-    version = version_file.read().strip()
+version = "0.0.0"
 
 setup(
     name="WrightTools",
