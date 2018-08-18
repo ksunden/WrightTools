@@ -18,7 +18,6 @@ import numpy as np
 import h5py
 
 from . import kit as wt_kit
-from . import exceptions as wt_exceptions
 from . import __wt5_version__
 
 
@@ -352,7 +351,7 @@ class Group(h5py.Group, metaclass=MetaClass):
             if overwrite:
                 filepath.unlink()
             else:
-                raise wt_exceptions.FileExistsError(filepath)
+                raise FileExistsError(filepath)
 
         # copy to new file
         h5py.File(filepath)

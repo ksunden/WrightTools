@@ -12,8 +12,6 @@ from .__version__ import *
 from .__wt5_version__ import *
 from . import collection
 from . import kit
-from . import units
-from . import exceptions
 
 from ._open import *
 from .collection._collection import *
