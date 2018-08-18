@@ -1,1 +1,1 @@
-from ._group import *
+from .foo import *
