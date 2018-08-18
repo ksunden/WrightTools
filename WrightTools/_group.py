@@ -27,13 +27,6 @@ from . import kit as wt_kit
 
 # --- class ---------------------------------------------------------------------------------------
 
-
-class MetaClass(type(h5py.Group)):
-    def __call__(cls, *args, **kwargs):
-        """Bypass normal construction."""
-        return cls.__new__(cls, *args, **kwargs)
-
-
 class Group(h5py.Group):
     """Container of groups and datasets."""
 
