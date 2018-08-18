@@ -88,32 +88,6 @@ class Group(h5py.Group, metaclass=MetaClass):
                 parent.attrs["item_names"], self.natural_name.encode()
             )
 
-    def __getattr__(self, key):
-        """Gets called if attribute not in self.__dict__.
-
-        See __getattribute__.
-        """
-        if key in self.keys():
-            value = self[key]
-            setattr(self, key, value)
-            return self[key]
-        else:
-            message = "{0} has no attribute {1}".format(self.class_name, key)
-            raise AttributeError(message)
-
-    def __getitem__(self, key):
-        from .collection import Collection
-
-        out = super().__getitem__(key)
-        if "class" in out.attrs.keys():
-            if out.attrs["class"] == "Collection":
-                return Collection(
-                    filepath=self.filepath, parent=self.name, name=key, edit_local=True
-                )
-            else:
-                return Group(filepath=self.filepath, parent=self.name, name=key, edit_local=True)
-        else:
-            return out
 
     def __new__(cls, *args, **kwargs):
         """New object formation handler."""
@@ -183,35 +157,6 @@ class Group(h5py.Group, metaclass=MetaClass):
             self.attrs["item_names"] = np.array([], dtype="S")
         return tuple(n.decode() for n in self.attrs["item_names"])
 
-    @property
-    def natural_name(self):
-        """Natural name."""
-        try:
-            assert self._natural_name is not None
-        except (AssertionError, AttributeError):
-            self._natural_name = self.attrs["name"]
-        finally:
-            return self._natural_name
-
-    @natural_name.setter
-    def natural_name(self, value):
-        """Set natural name."""
-        if value is None:
-            value = ""
-        self._natural_name = self.attrs["name"] = value
-
-    @property
-    def parent(self):
-        """Parent."""
-        try:
-            assert self._parent is not None
-        except (AssertionError, AttributeError):
-            from .collection import Collection
-
-            key = posixpath.dirname(self.fullpath) + posixpath.sep
-            self._parent = Collection._instances[key]
-        finally:
-            return self._parent
 
     def close(self):
         """Close the file that contains the Group.
@@ -260,94 +205,6 @@ class Group(h5py.Group, metaclass=MetaClass):
                     os.close(self._tmpfile[0])
                     os.remove(self._tmpfile[1])
 
-    def copy(self, parent=None, name=None, verbose=True):
-        """Create a copy under parent.
-
-        All children are copied as well.
-
-        Parameters
-        ----------
-        parent : WrightTools Collection (optional)
-            Parent to copy within. If None, copy is created in root of new
-            tempfile. Default is None.
-        name : string (optional)
-            Name of new copy at destination. If None, the current natural
-            name is used. Default is None.
-        verbose : boolean (optional)
-            Toggle talkback. Default is True.
-
-        Returns
-        -------
-        Group
-            Created copy.
-        """
-        if name is None:
-            name = self.natural_name
-        if parent is None:
-            new = Group()  # root of new tempfile
-            # attrs
-            new.attrs.update(self.attrs)
-            new.natural_name = name
-            # children
-            for k, v in self.items():
-                super().copy(v, new, name=v.natural_name)
-            new.flush()
-            p = new.filepath
-        else:
-            # copy
-            self.file.copy(self.name, parent, name=name)
-            new = parent[name]
-        # finish
-        if verbose:
-            print("{0} copied to {1}".format(self.fullpath, new.fullpath))
-        return new
-
     def flush(self):
         """Ensure contents are written to file."""
         self.file.flush()
-
-    def save(self, filepath=None, overwrite=False, verbose=True):
-        """Save as root of a new file.
-
-        Parameters
-        ----------
-        filepath : Path-like object (optional)
-            Filepath to write. If None, file is created using natural_name.
-        overwrite : boolean (optional)
-            Toggle overwrite behavior. Default is False.
-        verbose : boolean (optional)
-            Toggle talkback. Default is True
-
-        Returns
-        -------
-        str
-            Written filepath.
-        """
-        if filepath is None:
-            filepath = pathlib.Path("." / self.natural_name)
-        else:
-            filepath = pathlib.Path(filepath)
-        filepath = filepath.with_suffix(".wt5")
-        filepath = filepath.absolute().expanduser()
-        if filepath.exists():
-            if overwrite:
-                filepath.unlink()
-            else:
-                raise FileExistsError(filepath)
-
-        # copy to new file
-        h5py.File(filepath)
-        new = Group(filepath=filepath, edit_local=True)
-        # attrs
-        for k, v in self.attrs.items():
-            new.attrs[k] = v
-        # children
-        for k, v in self.items():
-            super().copy(v, new, name=v.natural_name)
-        # finish
-        new.flush()
-        new.close()
-        del new
-        if verbose:
-            print("file saved at", filepath)
-        return str(filepath)
