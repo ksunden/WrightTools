@@ -6,20 +6,16 @@ version = "0.0.0"
 
 setup(
     name="WrightTools",
-    packages=find_packages(exclude=("tests", "tests.*")),
+    packages=find_packages(),
     python_requires=">=3.5",
     version=version,
-    author="WrightTools Developers",
+    tests_require=["pytest"],
+    author="Kyle Sunden",
     license="MIT",
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
-        "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: MIT License",
-        "Natural Language :: English",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
-        "Topic :: Scientific/Engineering",
     ],
 )
