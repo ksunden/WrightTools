@@ -1,3 +1,5 @@
 import WrightTools as wt
+import gc
 def test_a():
-    c = wt.Foo()
+    wt.Foo()
+    gc.collect()
