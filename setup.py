@@ -9,6 +9,7 @@ setup(
     packages=find_packages(),
     python_requires=">=3.5",
     version=version,
+    setup_requires=["pytest-runner"],
     tests_require=["pytest"],
     author="Kyle Sunden",
     license="MIT",

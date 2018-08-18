@@ -26,4 +26,4 @@ install:
 build: false  # Not a C# project, build stuff at the test step instead.
 
 test_script:
-  - "%PYTHON%/python -m pytest"
+  - "%PYTHON%/python setup.py test"
