@@ -6,7 +6,6 @@
 
 import numpy as np
 
-from .. import data as wt_data
 from .. import exceptions as wt_exceptions
 from .._group import Group
 
@@ -126,11 +125,6 @@ class Collection(Group):
         if name == "":
             data = None
             natural_name = "".encode()
-        else:
-            data = wt_data.Data(
-                filepath=self.filepath, parent=self.name, name=name, edit_local=True, **kwargs
-            )
-            natural_name = data.natural_name.encode()
         if position is not None:
             self.attrs["item_names"] = np.insert(
                 self.attrs["item_names"][:-1], position, natural_name

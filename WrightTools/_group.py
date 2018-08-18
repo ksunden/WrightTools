@@ -109,20 +109,13 @@ class Group(h5py.Group, metaclass=MetaClass):
 
     def __getitem__(self, key):
         from .collection import Collection
-        from .data._data import Channel, Data, Variable
 
         out = super().__getitem__(key)
         if "class" in out.attrs.keys():
-            if out.attrs["class"] == "Channel":
-                return Channel(parent=self, id=out.id)
-            elif out.attrs["class"] == "Collection":
+            if out.attrs["class"] == "Collection":
                 return Collection(
                     filepath=self.filepath, parent=self.name, name=key, edit_local=True
                 )
-            elif out.attrs["class"] == "Data":
-                return Data(filepath=self.filepath, parent=self.name, name=key, edit_local=True)
-            elif out.attrs["class"] == "Variable":
-                return Variable(parent=self, id=out.id)
             else:
                 return Group(filepath=self.filepath, parent=self.name, name=key, edit_local=True)
         else:
@@ -244,10 +237,9 @@ class Group(h5py.Group, metaclass=MetaClass):
         Tempfiles, if they exist, will be removed
         """
         from .collection import Collection
-        from .data._data import Channel, Data, Variable
 
         path = os.path.abspath(self.filepath) + "::"
-        for kind in (Collection, Channel, Data, Variable, Group):
+        for kind in (Collection, Group):
             rm = []
             for key in kind._instances.keys():
                 if key.startswith(path):
