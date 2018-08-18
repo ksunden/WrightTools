@@ -13,7 +13,6 @@ from .__wt5_version__ import *
 from . import artists
 from . import collection
 from . import data
-from . import diagrams
 from . import kit
 from . import units
 from . import exceptions
