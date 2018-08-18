@@ -8,10 +8,6 @@ setup(
     name="WrightTools",
     packages=find_packages(exclude=("tests", "tests.*")),
     python_requires=">=3.5",
-    setup_requires=["pytest-runner"],
-    tests_require=[
-        "pytest",
-    ],
     version=version,
     author="WrightTools Developers",
     license="MIT",

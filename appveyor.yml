@@ -25,4 +25,4 @@ install:
 build: false  # Not a C# project, build stuff at the test step instead.
 
 test_script:
-  - "%PYTHON%/python tests/base.py"
+  - "%PYTHON%/python WrightTools/test.py"
