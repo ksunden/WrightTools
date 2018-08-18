@@ -60,8 +60,6 @@ class Group(h5py.Group, metaclass=MetaClass):
         self.natural_name = name
         # attrs
         self.attrs["class"] = self.class_name
-        if "created" not in self.attrs.keys():
-            self.attrs["created"] = wt_kit.TimeStamp().RFC3339
         for key, value in kwargs.items():
             try:
                 if isinstance(value, pathlib.Path):
@@ -172,10 +170,6 @@ class Group(h5py.Group, metaclass=MetaClass):
                 setattr(instance, "_tmpfile", tmpfile)
                 weakref.finalize(instance, instance.close)
         return instance
-
-    @property
-    def created(self):
-        return wt_kit.timestamp_from_RFC3339(self.attrs["created"])
 
     @property
     def fullpath(self):
