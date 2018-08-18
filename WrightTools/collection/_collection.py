@@ -9,7 +9,7 @@ import numpy as np
 from .. import exceptions as wt_exceptions
 from .._group import Group
 
-import skimage
+import dask.array as da
 
 
 # --- define --------------------------------------------------------------------------------------
