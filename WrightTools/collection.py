@@ -1,4 +1,5 @@
 from ._group import Group
-import dask.array as da
+from collections.abc import Iterator
+isinstance(lambda: 1, Iterator)
 class Collection(Group):
     pass
