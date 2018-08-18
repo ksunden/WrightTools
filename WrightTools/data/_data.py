@@ -245,7 +245,7 @@ class Data(Group):
         new.insert(0, new.pop(channel_index))
         self.channel_names = new
 
-    def chop(self, *args, at={}, parent=None, verbose=True) -> wt_collection.Collection:
+    def chop(self, *args, at={}, parent=None, verbose=True):
         """Divide the dataset into its lower-dimensionality components.
 
         Parameters
@@ -1318,7 +1318,7 @@ class Data(Group):
 
     def split(
         self, expression, positions, *, units=None, parent=None, verbose=True
-    ) -> wt_collection.Collection:
+    ):
         """
         Split the data object along a given expression, in units.
 
