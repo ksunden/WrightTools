@@ -38,8 +38,6 @@ setup(
     ],
     install_requires=[
         "dask[array]",
-        "h5py",
-        "numpy>=1.15.0",
     ],
     extras_require={
         "docs": ["sphinx", "sphinx-gallery==0.1.12", "sphinx-rtd-theme"],
