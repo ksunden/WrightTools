@@ -1,4 +1,4 @@
-"""General-purpose tool kit."""
-# flake8: noqa
+from typing import Tuple, Any
 
-from ._timestamp import *
+class TimeStamp:
+    pass
