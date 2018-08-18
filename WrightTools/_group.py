@@ -34,7 +34,7 @@ class MetaClass(type(h5py.Group)):
         return cls.__new__(cls, *args, **kwargs)
 
 
-class Group(h5py.Group, metaclass=MetaClass):
+class Group(h5py.Group):
     """Container of groups and datasets."""
 
     _instances = {}
